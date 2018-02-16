@@ -1,0 +1,46 @@
+- hosts: all
+  gather_facts: False
+  become: True
+
+  tasks:
+        - name: Get aptitude for upgrade
+          apt: pkg=aptitude state=present
+
+        - name: Update and upgrade apt packages
+          apt:
+                upgrade: yes
+                update_cache: yes
+                cache_valid_time: 86400 #One day
+        - name: Install docker
+          apt:
+                name: docker.io
+                state: present  
+        
+        - name: Install Kubernetes 4 Ubuntu
+          become: yes
+          block:
+                  - apt: 
+                    name: apt-transport-https
+                    state: latest
+                  - apt_repository:
+                          repo: deb http://apt.kubernetes.io/ kubernetes-xenial main
+                          state: present
+                          filename: kubernetes
+                  - apt_key:
+                          url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+                          state: present
+                  - apt:
+                          update_cache: yes
+                          force: yes
+
+                  - apt:
+                          name: "{{ item }}"
+                          state: present
+                          install_recommends: yes
+                    with_items:
+                          - kubelet
+                          - kubeadm
+                          - kubectl
+                    
+
+
