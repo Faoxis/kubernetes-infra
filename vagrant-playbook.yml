@@ -3,8 +3,20 @@
   become: True
 
   tasks:
+        
+        - name: install python 2
+          raw: test -e /usr/bin/python || (apt -y update && apt install -y python-minimal)
+
+        - name: install python
+          apt:
+                name: python-minimal
+                state: latest
+
         - name: Get aptitude for upgrade
           apt: pkg=aptitude state=present
+
+        - name: swap off
+          command: swapoff -a
 
         - name: Update and upgrade apt packages
           apt:

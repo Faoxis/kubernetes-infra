@@ -1,7 +1,7 @@
 Vagrant.configure("2") do |config|
-  config.vm.box = "bento/ubuntu-16.04"
+  config.vm.box = "ubuntu/xenial64"
 
-  N = 6
+  N = 3
 
   config.vm.provision "ansible" do |ansible|
     ansible.playbook = "vagrant-playbook.yml"
